@@ -10,7 +10,7 @@ router.get('/',async (req,res) => {
         searchOptions.name = new RegExp(req.query.name,'i') // i : search no case sensetive
     }
     try {
-        const authors = await Author.find()
+        const authors = await Author.find(searchOptions)
         res.render('authors/index',{
             authors: authors
         })
