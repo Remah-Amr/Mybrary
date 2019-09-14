@@ -1,0 +1,10 @@
+<h2>Search Author</h2>
+<form action="/authors" method="GET">
+    <label>Name</label>
+    <input type="text" name="name">
+    <button type="submit">Search</button>
+</form>
+<br>
+{{#each authors}}
+<div>{{name}}</div>
+{{/each}}
