@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const expressHbs = require('express-handlebars')
 const mongoose = require('mongoose')
+const keys = require('./config/keys')
 
 const indexRoute = require('./routes/index')
 
@@ -11,8 +12,10 @@ app.set('views','views');
 
 app.use(indexRoute)
 
-mongoose.connect('mongodb://remah:remah654312@ds019916.mlab.com:19916/mybrary',{ useNewUrlParser: true , useUnifiedTopology: true  }).then(()=>{ console.log('mongodb connected!');})
+mongoose.connect(keys.MONGO_URI,{ useNewUrlParser: true , useUnifiedTopology: true  }).then(()=>{ console.log('mongodb connected!');})
 
-app.listen(3000,() => {
+const port = process.env.PORT || 4000;
+
+app.listen(port,() => {
     console.log('server started on port successfully!')
 })
