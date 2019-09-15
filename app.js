@@ -10,6 +10,9 @@ const session = require('express-session');
 
 const indexRoute = require('./routes/index')
 const authorsRoute = require('./routes/authors')
+const booksRoute = require('./routes/books')
+
+require('./helpers/hbs')
 
 app.engine('hbs',expressHbs({layoutsDir: 'views/layouts/',defaultLayout: 'main-layout',extname: 'hbs'})); // since hbs not built in express we have to register hbs engine to express TO USING IT
 app.set('view engine','hbs'); 
@@ -29,6 +32,7 @@ app.use((req,res,next) => {
 
 app.use(indexRoute)
 app.use('/authors',authorsRoute)
+app.use('/books',booksRoute)
 
 mongoose.connect(keys.MONGO_URI,{ useNewUrlParser: true , useUnifiedTopology: true  }).then(()=>{ console.log('mongodb connected!');})
 

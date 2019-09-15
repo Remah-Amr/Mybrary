@@ -1,0 +1,38 @@
+<h2>New Book</h2>
+<form action="/books" method="POST">
+<div>
+  <label>Title</label>
+  <input type="text" name="title" value="{{book.title}}">
+</div>
+<div> 
+  <label>Author</label>
+  <select name="author">
+    {{#each authors}}
+            {{#ifCond '{{id}}' '==' '{{../book.author}}'}}
+                <option selected label="{{name}}" value="{{id}}>">
+            {{else}}
+                <option label="{{name}}" value="{{id}}">
+            {{/ifCond}}
+    {{/each}}   
+  </select>
+</div>
+   <div>
+  <label>Publish Date</label>
+  <input type="date" name="publishDate" value="{{Date}}">
+</div>
+    {{!-- pass Date in render as book.publishDate.toISOString.split('T')[0] --}}
+<div>
+  <label>Page Count</label>
+  <input type="number" name="pageCount" min="1" value="{{ book.pageCount }}">
+</div>
+<div>
+  <label>Cover</label>
+  <input type="file" name="cover">
+</div>
+<div>
+  <label>Description</label>
+  <textarea name="description">{{book.description}}</textarea>
+</div>
+  <a href="/books">Cancel</a>
+  <button type="submit">Create</button>
+</form>
