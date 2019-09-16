@@ -1,0 +1,7 @@
+<h2>Edit Author</h2>
+<form action="/authors/{{author.id}}?_method=PUT" method="post">
+<label>Name</label>
+<input type="text" name="name" value="{{author.name}}"> 
+<a href="/authors">Cancel</a>
+<button type="submit">Update</button>
+</form>

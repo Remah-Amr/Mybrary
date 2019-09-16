@@ -7,4 +7,9 @@
 <br>
 {{#each authors}}
 <div>{{name}}</div>
+<a href="/authors/{{id}}">view</a>
+<a href="/authors/{{id}}/edit">Edit</a>
+<form action="/authors/{{id}}?_method=DELETE" method="POST" >
+    <button type="submit">DELETE</button>
+</form>
 {{/each}}

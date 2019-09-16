@@ -31,7 +31,21 @@ const bookSchema = new Schema({
           type: Schema.Types.ObjectId,
           required:true,
           ref:'author'
+      },coverImage: {
+        type: Buffer,
+        required: true
+      },
+      coverImageType: {
+        type: String,
+        required: true
       }
 });
+
+// when i call coverImagePath will fire get function
+bookSchema.virtual('coverImagePath').get(function() {
+    if (this.coverImage != null && this.coverImageType != null) {
+      return `data:${this.coverImageType};charset=utf-8;base64,${this.coverImage.toString('base64')}` //The <data> tag links the given content with a machine-readable translation.
+    }
+  })
 
 module.exports = mongoose.model('book',bookSchema); // author not Author

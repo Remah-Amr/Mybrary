@@ -6,7 +6,7 @@ const keys = require('./config/keys')
 const bodyParser = require('body-parser')
 const flash = require('connect-flash');
 const session = require('express-session');
-
+const methodOverride = require('method-override')
 
 const indexRoute = require('./routes/index')
 const authorsRoute = require('./routes/authors')
@@ -23,6 +23,10 @@ app.use(bodyParser.urlencoded({limit:'10mb',extended:false}))
 app.use(session({secret:'my secret',resave:false,saveUninitialized:false}));
 
 app.use(flash()); 
+
+app.use(methodOverride('_method'))
+
+app.use(express.static('public'));
 
 app.use((req,res,next) => {
   res.locals.errorMessage = req.flash('error');
