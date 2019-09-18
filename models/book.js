@@ -23,10 +23,6 @@ const bookSchema = new Schema({
         required: true,
         default: Date.now
     },
-    // coverImageName: {
-    //     type: String,
-    //     required: true // remove it
-    //   },
       author:{
           type: Schema.Types.ObjectId,
           required:true,

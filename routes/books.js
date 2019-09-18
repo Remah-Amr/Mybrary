@@ -112,4 +112,58 @@ async function renderNewPage(res,book,hasError = false){
     }
 }
 
+router.get('/:id',async (req,res)=>{
+    try {
+        const book = await Book.findById(req.params.id).populate('author')
+        res.render('books/show',{
+            book: book,
+            Date:book.publishDate.toISOString().split('T')[0] // toISOString to convert from object to string, split T array like this [ '2019-01-01', '00:00:00.000Z' ] ,[0] first part of array
+            // or instead of toISOString() => toDateString()
+        })
+    } catch {
+        res.redirect('/books')
+    }
+})
+
+router.get('/:id/edit',async (req,res)=>{
+    const book = await Book.findById(req.params.id).populate('author')
+    const authors = await Author.find({})
+    res.render('books/edit',{
+        book: book,
+        Date: book.publishDate.toISOString().split('T')[0], // first part of array
+        authors: authors
+    })
+})
+router.put('/:id',async (req,res)=>{
+    let book
+    try {
+    book = await Book.findById(req.params.id)
+    book.title = req.body.title
+    book.publishDate = req.body.publishDate
+    book.description = req.body.description
+    book.pageCount = req.body.pageCount
+    book.author = req.body.author
+    if(req.body.cover != null && req.body.cover != ''){ // if user not change old one we keep it , if change will override
+        saveCover(book, req.body.cover)
+    }
+    await book.save() 
+    res.redirect(`/books/${book.id}`)
+    } catch (err){
+        console.log(err)
+        req.flash('error','Error Updating Book')
+        res.redirect(`/books/${book.id}`)
+    }
+})
+
+router.delete('/:id',async (req,res)=> {
+    
+    try {
+        await Book.findByIdAndDelete(req.params.id)
+        res.redirect('/books')
+    } catch{
+        req.flash('error','Error Deleting Book')
+        res.redirect('/books')
+    }
+})
+
 module.exports = router

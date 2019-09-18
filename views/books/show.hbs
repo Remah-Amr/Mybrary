@@ -1,0 +1,14 @@
+<h2>{{book.title}}</h2>
+<img height="250" width="250" src="{{book.coverImagePath }}">
+<br>
+<a href="/books/{{book.id}}/edit">Edit</a>
+<form action="/books/{{book.id}}?_method=DELETE" method="POST" >
+    <button type="submit">DELETE</button>
+</form>
+<a href="/authors/{{book.author.id}}">View Author</a>
+<div>
+    author : {{book.author.name}} <br>
+    publishDate: {{Date}} <br>
+    pageCount: {{book.pageCount}} <br>
+    description: {{book.description}} 
+</div>

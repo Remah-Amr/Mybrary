@@ -7,7 +7,7 @@
 <div>
 {{#if books}}
     {{#each books}}
-        <img height="400" width="550" src="{{coverImagePath }}">
+        <a href="/books/{{id}}"><img height="400" width="550" src="{{coverImagePath }}"></a>
     {{/each}}
 {{else}}
 <h2>NO BOOKS TO THIS AUTHOR!</h2>

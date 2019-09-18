@@ -1,5 +1,5 @@
-<h2>New Book</h2>
-<form action="/books" method="POST">
+<h2>Update Book</h2>
+<form action="/books/{{book.id}}?_method=PUT" method="POST">
 <div>
   <label>Title</label>
   <input type="text" name="title" value="{{book.title}}">
@@ -9,7 +9,11 @@
   
   <select name="author">
     {{#each authors}}
-                <option selected label="{{name}}" value="{{id}}>">
+    {{#ifCond ../book.author.id '==' id}}
+        <option  selected label="{{name}}" value="{{id}}">
+          {{else}}
+        <option   label="{{name}}" value="{{id}}">
+    {{/ifCond}}  
     {{/each}}   
   </select>
 </div>
@@ -31,5 +35,5 @@
   <textarea name="description">{{book.description}}</textarea>
 </div>
   <a href="/books">Cancel</a>
-  <button type="submit">Create</button>
+  <button type="submit">Update</button>
 </form>
