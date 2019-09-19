@@ -103,7 +103,7 @@ router.post('/reset',(req,res,next)=>{
                 subject:'Reset Password',
                 html: ` 
                 <p>You requested a password reset</p>
-                <p>Click this <a href="http://localhost:4000/auth/reset/${token}">link</a> to set a new password.</p>
+                <p>Click this <a href="https://remah-mybrary.herokuapp.com/auth/reset/${token}">link</a> to set a new password.</p>
               ` // use packtic to write more than line
             })
             .then(result => {
