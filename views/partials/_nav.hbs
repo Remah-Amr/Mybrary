@@ -6,6 +6,13 @@
       <li><a href="/authors/new">Add Author</a></li>
       <li><a href="/books">books</a></li>
       <li><a href="/books/new">Add book</a></li>
+      {{#unless user}}
+      <li><a href="/auth/login">Login</a></li>
+      <li><a href="/auth/signup">signup</a></li>
+      {{/unless}}
+      {{#if user}}
+      <li><a href="/auth/logout">logout</a></li>
+      {{/if}}
     </ul>
   </nav>
 </header> 

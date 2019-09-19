@@ -7,12 +7,16 @@ const bodyParser = require('body-parser')
 const flash = require('connect-flash');
 const session = require('express-session');
 const methodOverride = require('method-override')
+const passport = require('passport');
 
 const indexRoute = require('./routes/index')
 const authorsRoute = require('./routes/authors')
 const booksRoute = require('./routes/books')
+const authRoute = require('./routes/auth')
 
 require('./helpers/hbs')
+
+require('./config/passport')(passport);
 
 app.engine('hbs',expressHbs({layoutsDir: 'views/layouts/',defaultLayout: 'main-layout',extname: 'hbs'})); // since hbs not built in express we have to register hbs engine to express TO USING IT
 app.set('view engine','hbs'); 
@@ -21,6 +25,9 @@ app.set('views','views');
 app.use(bodyParser.urlencoded({limit:'10mb',extended:false}))
 
 app.use(session({secret:'my secret',resave:false,saveUninitialized:false}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(flash()); 
 
@@ -31,10 +38,12 @@ app.use(express.static('public'));
 app.use((req,res,next) => {
   res.locals.errorMessage = req.flash('error');
   res.locals.successMessage = req.flash('success');
+  res.locals.user = req.user || null;
   next(); 
 })
 
 app.use(indexRoute)
+app.use('/auth',authRoute)
 app.use('/authors',authorsRoute)
 app.use('/books',booksRoute)
 

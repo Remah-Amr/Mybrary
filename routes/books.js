@@ -3,6 +3,7 @@ const router = express.Router()
 const Book = require('../models/book')
 const Author = require('../models/author')
 const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif','image/jpg']
+const {ensureAuthenticated,ensureGuest} = require('../config/isAuth')
 // https://docs.mongodb.com/manual/reference/operator/meta/max/#examples
 // https://docs.mongodb.com/manual/reference/operator/query-modifier/
 // below i will append every one to query above then execute it by exec() , i write Model.find().queryModifier('field',value)
@@ -18,7 +19,7 @@ const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif','image/jpg']
 //         query = query.lte('publishDate',req.query.publishedBefore)
 //     }
 //     try {
-//         const books = await query.exec()
+//         const books = await query.exec() // This is very useful when building complex queries. Some examples can include using the populate and aggregate functions.
 //         res.render('books/index',{
 //             books: books,
 //             searchOptions: req.query
@@ -29,7 +30,7 @@ const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif','image/jpg']
 // })
 
 
-router.get('/',async(req,res) => {
+router.get('/',ensureAuthenticated,async(req,res) => {
     // must fill the options 
     let lesserDate
     let greaterDate
@@ -55,7 +56,7 @@ router.get('/',async(req,res) => {
 })
 
 
-router.post('/',async(req,res)=>{
+router.post('/',ensureAuthenticated,async(req,res)=>{
     const book = new Book({
         title: req.body.title,
         publishDate: new Date(req.body.publishDate),
@@ -91,7 +92,7 @@ function saveCover(book, coverEncoded) {
     }
   }
 
-router.get('/new',async (req,res)=>{
+router.get('/new',ensureAuthenticated,async (req,res)=>{
    renderNewPage(res)
 })
 
@@ -112,7 +113,7 @@ async function renderNewPage(res,book,hasError = false){
     }
 }
 
-router.get('/:id',async (req,res)=>{
+router.get('/:id',ensureAuthenticated,async (req,res)=>{
     try {
         const book = await Book.findById(req.params.id).populate('author')
         res.render('books/show',{
@@ -125,7 +126,7 @@ router.get('/:id',async (req,res)=>{
     }
 })
 
-router.get('/:id/edit',async (req,res)=>{
+router.get('/:id/edit',ensureAuthenticated,async (req,res)=>{
     const book = await Book.findById(req.params.id).populate('author')
     const authors = await Author.find({})
     res.render('books/edit',{
@@ -134,7 +135,7 @@ router.get('/:id/edit',async (req,res)=>{
         authors: authors
     })
 })
-router.put('/:id',async (req,res)=>{
+router.put('/:id',ensureAuthenticated,async (req,res)=>{
     let book
     try {
     book = await Book.findById(req.params.id)
@@ -155,7 +156,7 @@ router.put('/:id',async (req,res)=>{
     }
 })
 
-router.delete('/:id',async (req,res)=> {
+router.delete('/:id',ensureAuthenticated,async (req,res)=> {
     
     try {
         await Book.findByIdAndDelete(req.params.id)

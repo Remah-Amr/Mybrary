@@ -2,8 +2,10 @@ const express = require('express')
 const router = express.Router()
 const Author = require('../models/author')
 const Book = require('../models/book')
+const {ensureAuthenticated,ensureGuest} = require('../config/isAuth')
+
 // all authors
-router.get('/',async (req,res) => {
+router.get('/',ensureAuthenticated,async (req,res) => {
     let searchOptions = {} // empty object has fields samr of data in db to search by it when throwing in find method
     if(req.query.name !== null && req.query.name !== '' ) // you can remove this condition but to arrange only if you don't enter any search so name is null or you enter search but the input is empty
     {
@@ -23,12 +25,12 @@ router.get('/',async (req,res) => {
  
 
 // get new author
-router.get('/new',(req,res)=>{
+router.get('/new',ensureAuthenticated,(req,res)=>{
     res.render('authors/new')
 })
 
 // post new author
-router.post('/',async (req,res)=>{
+router.post('/',ensureAuthenticated,async (req,res)=>{
     const author = new Author({
         name: req.body.name
     })
@@ -58,7 +60,7 @@ router.post('/',async (req,res)=>{
     // })
 })
 
-router.get('/:id',async (req,res)=>{
+router.get('/:id',ensureAuthenticated,async (req,res)=>{
     try {
         const author = await Author.findById(req.params.id)
         let books = await Book.find({author: req.params.id})
@@ -73,14 +75,14 @@ router.get('/:id',async (req,res)=>{
 })
 
 // note: above in new route if we put below we don't access anyTime because this route will consider new params
-router.get('/:id/edit',async (req,res)=>{
+router.get('/:id/edit',ensureAuthenticated,async (req,res)=>{
     const author = await Author.findById(req.params.id)
     res.render('authors/edit',{
         author: author
     })
 })
 
-router.put('/:id',async (req,res)=>{
+router.put('/:id',ensureAuthenticated,async (req,res)=>{
     let author
     try{
         author = await Author.findById(req.params.id)
@@ -100,7 +102,7 @@ router.put('/:id',async (req,res)=>{
     }
 })
 
-router.delete('/:id',async (req,res)=> {
+router.delete('/:id',ensureAuthenticated,async (req,res)=> {
     let author
     try{
         let books = await Book.find({author: req.params.id})
