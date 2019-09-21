@@ -10,7 +10,8 @@ const methodOverride = require('method-override')
 const passport = require('passport');
 const csrf = require('csurf');
 const csrfProtection = csrf();
-
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
 
 const indexRoute = require('./routes/index')
 const authorsRoute = require('./routes/authors')
@@ -57,6 +58,14 @@ mongoose.connect(keys.MONGO_URI,{ useNewUrlParser: true , useUnifiedTopology: tr
 
 const port = process.env.PORT || 4000;
 
-app.listen(port,() => {
+server.listen(port,() => {
     console.log('server started on port successfully!')
+})
+
+
+io.on('connection',socket => {
+  console.log('Client Connected!')
+  socket.on('test',data => {
+    console.log('socket.io')
+  })
 })
