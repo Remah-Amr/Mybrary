@@ -35,5 +35,6 @@
   <textarea name="description">{{book.description}}</textarea>
 </div>
   <a href="/books">Cancel</a>
+<input type="hidden" value='{{csrfToken}}' name='_csrf'>
   <button type="submit">Update</button>
 </form>

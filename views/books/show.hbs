@@ -3,6 +3,7 @@
 <br>
 <a href="/books/{{book.id}}/edit">Edit</a>
 <form action="/books/{{book.id}}?_method=DELETE" method="POST" >
+<input type="hidden" value='{{csrfToken}}' name='_csrf'>
     <button type="submit">DELETE</button>
 </form>
 <a href="/authors/{{book.author.id}}">View Author</a>
@@ -12,3 +13,4 @@
     pageCount: {{book.pageCount}} <br>
     description: {{book.description}} 
 </div>
+<a href="/books/invoice/{{book.id}}">PDF INFO ABOUT BOOK!</a>

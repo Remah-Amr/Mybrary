@@ -10,6 +10,7 @@
 <a href="/authors/{{id}}">view</a>
 <a href="/authors/{{id}}/edit">Edit</a>
 <form action="/authors/{{id}}?_method=DELETE" method="POST" >
+<input type="hidden" value='{{../csrfToken}}' name='_csrf'>
     <button type="submit">DELETE</button>
 </form>
 {{/each}}

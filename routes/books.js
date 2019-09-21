@@ -4,6 +4,9 @@ const Book = require('../models/book')
 const Author = require('../models/author')
 const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif','image/jpg']
 const {ensureAuthenticated,ensureGuest} = require('../config/isAuth')
+const PDFDocument = require('pdfkit'); 
+const fs = require('fs');
+const path = require('path');
 // https://docs.mongodb.com/manual/reference/operator/meta/max/#examples
 // https://docs.mongodb.com/manual/reference/operator/query-modifier/
 // below i will append every one to query above then execute it by exec() , i write Model.find().queryModifier('field',value)
@@ -165,6 +168,35 @@ router.delete('/:id',ensureAuthenticated,async (req,res)=> {
         req.flash('error','Error Deleting Book')
         res.redirect('/books')
     }
+})
+
+router.get('/invoice/:id',ensureAuthenticated,async(req,res)=>{
+    const bookId = req.params.id
+    try{
+        const book = await Book.findById(bookId).populate('author')
+        const bookInfo = 'invoice-' + book.title + '.pdf';
+        const bookPath = path.join('invoices',bookInfo);  
+        const pdfDoc = new PDFDocument(); // you can add images also , see Docs
+        pdfDoc.pipe(fs.createWriteStream(bookPath));// create file on server on fly
+        res.setHeader('Content-Type','application/pdf'); // to deal as pdf
+        res.setHeader('Content-Disposition','inline; filename="'+bookPath+'"'); // inline mean open in browser
+        pdfDoc.pipe(res); // return our pdf to user which res is writableStream , pdfDoc is readable one
+        pdfDoc.fontSize(26).text('BOOK',{ // text write single line
+          underline: true
+        }); 
+        pdfDoc.fontSize(14).text(`${book.title}`)
+        pdfDoc.text('------------')
+        pdfDoc.fontSize(14).text(`${book.author.name}`)
+        pdfDoc.text('------------')
+        pdfDoc.fontSize(14).text(`${book.description}`)
+        pdfDoc.text('------------')
+        pdfDoc.fontSize(14).text(`${book.pageCount}`)
+        pdfDoc.end();
+    } catch {
+        req.flash('error','Error viewing PDF')
+        res.redirect(`/books/${bookId}`)
+    }
+    
 })
 
 module.exports = router

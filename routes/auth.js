@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const {check} = require('express-validator');
+const {validationResult} = require('express-validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto'); // not related to csrt token
 const passport = require('passport');
@@ -14,6 +16,9 @@ const transproter = nodemailer.createTransport({ // 2
        }                                // from each deploy or push or edit you must click link and press continue above
  });   
 
+
+
+
 router.get('/login',ensureGuest,(req,res) => {
     res.render('auth/login')
 })
@@ -22,7 +27,24 @@ router.get('/signup',ensureGuest,(req,res)=>{
     res.render('auth/signup')
 })
 
-router.post('/signup',ensureGuest,async (req,res)=>{
+router.post('/signup',[
+    check('email').isEmail().withMessage('PLEASE : You Have to Enter Validate Email!'),
+    check('email').custom(value => { // call async validation because you have to wait until search in database
+        return User.findOne({email: value}).then(user => {
+          if (user) {
+            return Promise.reject('PLEASE: E-mail already in use');
+          }
+        });
+      }).normalizeEmail(), // to lowerCase every char after enter it by user , you can put it anywere , call sanitizers 
+    check('password','You have to enter in password only numbers and text and at least 5 characters').isLength({ min: 5 }).isAlphanumeric().trim()// to remove white space at beginig or end, alphanumeric TO BE LETTERS AND NUMBERS ONLY
+    ],
+     ensureGuest,
+     async (req,res)=>{
+     const errors = validationResult(req);
+    if (!errors.isEmpty()) {   
+     req.flash('error',errors.array()[0].msg)
+     return res.redirect('/auth/signup')
+    }                                                                            
     const user = await User.findOne({email: req.body.email})
     if(user){
         req.flash('error',"Email already in use")
@@ -60,7 +82,7 @@ router.post('/signup',ensureGuest,async (req,res)=>{
     } 
 })
 
-router.post('/login',ensureGuest,(req,res,next)=>{
+router.post('/login',check('email').normalizeEmail(),check('password').trim(),ensureGuest,(req,res,next)=>{
     passport.authenticate('local',{
         successRedirect:'/',
         failureRedirect:'/auth/login',

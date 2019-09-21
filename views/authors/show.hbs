@@ -2,6 +2,7 @@
 <a href="/authors/{{author.id}}/edit">Edit</a>
 <form action="/authors/{{author.id}}?_method=DELETE" method="POST" >
     <button type="submit">DELETE</button>
+<input type="hidden" value='{{csrfToken}}' name='_csrf'>
 </form>
 <h2>Books by {{author.name}}</h2>
 <div>

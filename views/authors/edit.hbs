@@ -3,5 +3,6 @@
 <label>Name</label>
 <input type="text" name="name" value="{{author.name}}"> 
 <a href="/authors">Cancel</a>
+<input type="hidden" value='{{csrfToken}}' name='_csrf'>
 <button type="submit">Update</button>
 </form>

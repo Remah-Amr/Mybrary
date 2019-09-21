@@ -8,6 +8,9 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const methodOverride = require('method-override')
 const passport = require('passport');
+const csrf = require('csurf');
+const csrfProtection = csrf();
+
 
 const indexRoute = require('./routes/index')
 const authorsRoute = require('./routes/authors')
@@ -31,6 +34,8 @@ app.use(passport.session());
 
 app.use(flash()); 
 
+app.use(csrfProtection); 
+
 app.use(methodOverride('_method'))
 
 app.use(express.static('public'));
@@ -39,6 +44,7 @@ app.use((req,res,next) => {
   res.locals.errorMessage = req.flash('error');
   res.locals.successMessage = req.flash('success');
   res.locals.user = req.user || null;
+  res.locals.csrfToken = req.csrfToken(); //
   next(); 
 })
 
